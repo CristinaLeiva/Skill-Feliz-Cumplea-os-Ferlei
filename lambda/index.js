@@ -171,7 +171,7 @@ const RemindBirthdayIntentHandler = {
         const name = sessionAttributes['name'] ? sessionAttributes['name'] : '';
         const message = intent.slots.message.value;
 
-        if(intent.confirmationStatus !== 'CONFIRMED') {
+        if(intent.slots.message.confirmationStatus !== 'CONFIRMED') {
 
             return handlerInput.responseBuilder
                 .speak(handlerInput.t('CANCEL_MSG') + handlerInput.t('HELP_MSG'))
@@ -207,14 +207,14 @@ const RemindBirthdayIntentHandler = {
                 const reminderServiceClient = serviceClientFactory.getReminderManagementServiceClient();
                 // reminders are retained for 3 days after they 'remind' the customer before being deleted
                 const remindersList = await reminderServiceClient.getReminders();
-                console.log('Current reminders: ' + JSON.stringify(remindersList));
+                console.log('Recordatorios Actuales: ' + JSON.stringify(remindersList));
                 console.log(JSON.stringify(remindersList));
                 // delete previous reminder if present
                 const previousReminder = sessionAttributes['reminderId'];
                 if(previousReminder){
                     await reminderServiceClient.deleteReminder(previousReminder);
                     delete sessionAttributes['reminderId'];
-                    console.log('Deleted previous reminder with token: ' + previousReminder);
+                    console.log('Borrado recordatorio anterior con token: ' + previousReminder);
                 }
                 // create reminder structure
                 const reminder = logic.createReminderData(
@@ -225,7 +225,7 @@ const RemindBirthdayIntentHandler = {
                 const reminderResponse = await reminderServiceClient.createReminder(reminder); // the response will include an "alertToken" which you can use to refer to this reminder
                 // save reminder id in session attributes
                 sessionAttributes['reminderId'] = reminderResponse.alertToken;
-                console.log('Reminder created with token: ' + reminderResponse.alertToken);
+                console.log('Recordatorio creado con token: ' + reminderResponse.alertToken);
                 speechText = handlerInput.t('REMINDER_CREATED_MSG') + handlerInput.t('HELP_MSG');
             } catch (error) {
                 console.log(JSON.stringify(error));
@@ -277,7 +277,7 @@ const CelebrityBirthdaysIntentHandler = {
                 .speak(handlerInput.t('NO_TIMEZONE_MSG'))
                 .getResponse();
         }
-        console.log('Got timezone: ' + timezone);
+        console.log('Obtenido timezone: ' + timezone);
 
         try {
             // call the progressive response service
@@ -318,7 +318,7 @@ const HelpIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speechText = handlerInput.t('HELP_MSG');
+        const speechText = handlerInput.t('HELP_MSG_LONG');
 
         return handlerInput.responseBuilder
             .speak(speechText)
@@ -355,7 +355,7 @@ const FallbackIntentHandler = {
 
         return handlerInput.responseBuilder
             .speak(speechText)
-            .reprompt(handlerInput.t('HELP_MSG'))
+            .reprompt(handlerInput.t('HELP_MSG_LONG'))
             .getResponse();
     }
 };
@@ -403,7 +403,7 @@ const ErrorHandler = {
 
         return handlerInput.responseBuilder
             .speak(speechText)
-            .reprompt(handlerInput.t('HELP_MSG'))
+            .reprompt(handlerInput.t('HELP_MSG_LONG'))
             .getResponse();
     }
 };

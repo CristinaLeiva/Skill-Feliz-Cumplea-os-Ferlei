@@ -68,6 +68,7 @@ module.exports = {
         ?human wdt:P31 wd:Q5.
         ?human wdt:P106 wd:Q33999.
         ?human wdt:P18 ?picture.
+        ?human wdt:P27 wd:Q29
         FILTER((DATATYPE(?date_of_birth)) = xsd:dateTime)
         FILTER((MONTH(?date_of_birth)) = ${month})
         FILTER((DAY(?date_of_birth)) = ${day})
