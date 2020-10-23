@@ -1,5 +1,40 @@
 {
   "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "es-ES": {
+          "summary": "Recuerda los cumpleaños y te felicita en tu día",
+          "examplePhrases": [
+            "Alexa, abre feliz cumpleaños Ferlei.",
+            "Cuántos días faltan para mi cumpleaños?",
+            "Quien cumple años hoy?"
+          ],
+          "keywords": [
+            "feliz",
+            "cumpleaños",
+            "Ferlei"
+          ],
+          "name": "Feliz cumpleaños Ferlei",
+          "description": "Recuerda los cumpleaños y te felicita en tu día",
+          "smallIconUri": "file://assets/images/es-ES_smallIconUri.png",
+          "updatesDescription": "Nueva aplicación que recuerda el día de tu cumpleaños y te felicita.",
+          "largeIconUri": "file://assets/images/es-ES_largeIconUri.png"
+        }
+      },
+      "automaticDistribution": {
+        "sourceLocaleForLanguages": [
+          {
+            "sourceLocale": "es-ES",
+            "language": "es"
+          }
+        ],
+        "isActive": true
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "Se debe dar permiso a la skill para que recopile el nombre del usuario.",
+      "category": "CHILDRENS_WORD_AND_CATEGORIZATION_GAMES",
+      "distributionCountries": []
+    },
     "apis": {
       "custom": {
         "endpoint": {
@@ -7,14 +42,14 @@
         },
         "interfaces": [],
         "regions": {
-          "NA": {
-            "endpoint": {
-              "uri": "arn:aws:lambda:us-east-1:934760434538:function:67285e79-6769-49c0-a27d-3f0dbd45269a:Release_0"
-            }
-          },
           "EU": {
             "endpoint": {
               "uri": "arn:aws:lambda:eu-west-1:934760434538:function:67285e79-6769-49c0-a27d-3f0dbd45269a:Release_0"
+            }
+          },
+          "NA": {
+            "endpoint": {
+              "uri": "arn:aws:lambda:us-east-1:934760434538:function:67285e79-6769-49c0-a27d-3f0dbd45269a:Release_0"
             }
           },
           "FE": {
@@ -35,31 +70,16 @@
       }
     ],
     "privacyAndCompliance": {
-      "locales": {
-        "es-ES": {}
-      }
-    },
-    "publishingInformation": {
-      "automaticDistribution": {
-        "isActive": false
-      },
-      "category": "KNOWLEDGE_AND_TRIVIA",
-      "distributionCountries": [],
-      "isAvailableWorldwide": true,
+      "allowsPurchases": false,
       "locales": {
         "es-ES": {
-          "description": "Recuerda el cumpleaños del usuario.",
-          "examplePhrases": [
-            "Alexa abre feliz cumpleaños Ferlei",
-            "mi cumple es el 1 de enero de 2000",
-            "ayuda"
-          ],
-          "keywords": [],
-          "name": "Feliz cumpleaños Ferlei",
-          "summary": "Recuerda los cumpleaños"
+          "privacyPolicyUrl": "https://github.com/CristinaLeiva/skill-feliz-cumpleanos-ferlei/blob/main/privacyPolicy"
         }
       },
-      "testingInstructions": "Sample Testing Instructions."
+      "containsAds": false,
+      "isExportCompliant": true,
+      "isChildDirected": false,
+      "usesPersonalInfo": true
     }
   }
 }

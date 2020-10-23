@@ -45,17 +45,61 @@ const LaunchRequestHandler = {
         }
 
         const name = sessionAttributes['name'] ? sessionAttributes['name'] + '. ' : '';
-
+        
+        //Si no hay fecha guardada da la bienvenida y pide la fecha de nacimiento
         let speechText = handlerInput.t('WELCOME_MSG', {name: name});
 
-        if(day && monthName && year){
+        //estas líneas solo recuerdan el día del cumpleaños que tiene guardado, nada más
+        /*if(day && monthName && year){
             speechText = handlerInput.t('REGISTER_MSG', {name: name, day: day, month: monthName, year: year}) + handlerInput.t('HELP_MSG');
-        }
+        }*/
+        
+        //Pero si sí que hay una fecha, lo que quiero es que directamente me diga feliz cumpleaños
+        if(day && month && year){
+            const deviceId = requestEnvelope.context.System.device.deviceId;
+    
+            // let's try to get the timezone via the UPS API
+            // (no permissions required but it might not be set up)
+            let timezone;
+            try {
+                const upsServiceClient = serviceClientFactory.getUpsServiceClient();
+                timezone = await upsServiceClient.getSystemTimeZone(deviceId);
+            } catch (error) {
+                return handlerInput.responseBuilder
+                    .speak(handlerInput.t('NO_TIMEZONE_MSG'))
+                    .getResponse();
+            }
+            console.log('Got timezone: ' + timezone);
+
+            const birthdayData = logic.getBirthdayData(day, month, year, timezone);
+            speechText = speechText = handlerInput.t('REGISTER_MSG', {name: name, day: day, month: monthName, year: year});
+            if(birthdayData.daysUntilBirthday === 0) { // it's the user's birthday!
+                speechText = handlerInput.t('GREET_MSG', {name: name});
+                speechText += handlerInput.t('NOW_TURN_MSG', {count: birthdayData.age});
+
+                const dateData = logic.getAdjustedDateData(timezone);
+                const response = await logic.fetchBirthdaysData(dateData.day, dateData.month, 5);
+
+                if(response) { // if the API call fails we just don't append today's birthdays
+                    console.log(JSON.stringify(response));
+                    const results = response.results.bindings;
+                    speechText += handlerInput.t('ALSO_TODAY_MSG');
+                    results.forEach((person, index) => {
+                        console.log(person);
+                        if(index === Object.keys(results).length - 2)
+                            speechText += person.humanLabel.value + handlerInput.t('CONJUNCTION_MSG');
+                     
+                        else
+                            speechText += person.humanLabel.value + '. '
+                    });
+                }
+            }
         
         return handlerInput.responseBuilder
-            .speak(speechText)
+            .speak(speechText + handlerInput.t('HELP_MSG'))
             .reprompt(handlerInput.t('HELP_MSG'))
             .getResponse();
+        }
     }
 };
 
@@ -149,7 +193,7 @@ const SayBirthdayIntentHandler = {
         }
 
         return handlerInput.responseBuilder
-            .speak(speechText)
+            .speak(speechText + handlerInput.t('HELP_MSG'))
             .reprompt(handlerInput.t('HELP_MSG'))
             .getResponse();
     }
@@ -416,7 +460,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         RegisterBirthdayIntentHandler,
         SayBirthdayIntentHandler,
-        RemindBirthdayIntentHandler,
+        //RemindBirthdayIntentHandler,
         CelebrityBirthdaysIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
